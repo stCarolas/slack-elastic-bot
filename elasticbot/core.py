@@ -8,7 +8,7 @@ class ElasticBot(object):
         print("config ElasticBot")
 
     def start(self):
-        print("elasticbot started using token ", self.config.getToken())
+        print("elasticbot started using token", self.config.getToken())
         slackClient = SlackClient(self.config.getToken())
         if slackClient.rtm_connect():
             while True:
