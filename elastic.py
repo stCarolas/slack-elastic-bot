@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
-from elasticbot import ElasticBot
+from elasticbot.core import ElasticBotConfig
+from elasticbot.core import ElasticBot
 
-bot = ElasticBot("test config")
+config = ElasticBotConfig();
+config.setToken("xoxb-39134108566-fm7WHjqnT282WZH9JbpLaTr9")
+bot = ElasticBot(config)
 bot.start()
