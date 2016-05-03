@@ -15,7 +15,7 @@ class ElasticBot(object):
             while True:
                 readedData = slackClient.rtm_read()
                 if readedData:
-                message = readedData[0]
+                    message = readedData[0]
                     if 'type' in message:
                         print(readedData)
                         messageType = readedData[0]['type']
@@ -24,7 +24,7 @@ class ElasticBot(object):
                             messageChannel = readedData[0]['channel']
                             print("message '", messageText,"' from channel", messageChannel)
                             slackClient.rtm_send_message(messageChannel, messageText)
-                time.sleep(3)
+                time.sleep(self.config.getCheckInterval())
         else:
             print("Connection Failed, invalid token?")       
 
