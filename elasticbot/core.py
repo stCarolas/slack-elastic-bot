@@ -10,7 +10,6 @@ class ElasticBot(object):
     def start(self):
         print("elasticbot started using token ", self.config.getToken())
         slackClient = SlackClient(self.config.getToken())
-        test = True
         if slackClient.rtm_connect():
             while True:
                 readedData = slackClient.rtm_read()
@@ -18,10 +17,10 @@ class ElasticBot(object):
                     message = readedData[0]
                     if 'type' in message:
                         print(readedData)
-                        messageType = readedData[0]['type']
+                        messageType = message['type']
                         if messageType == 'message':
-                            messageText = readedData[0]['text']
-                            messageChannel = readedData[0]['channel']
+                            messageText = message['text']
+                            messageChannel = message['channel']
                             print("message '", messageText,"' from channel", messageChannel)
                             slackClient.rtm_send_message(messageChannel, messageText)
                 time.sleep(self.config.getCheckInterval())
