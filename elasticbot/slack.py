@@ -25,7 +25,7 @@ class ElasticBot(object):
                             slackClient.rtm_send_message(messageChannel, messageText)
                 time.sleep(self.config.getCheckInterval())
         else:
-            print("Connection Failed, invalid token?")       
+            print("Connection Failed")       
 
 class ElasticBotConfig:
     def __init__(self):
