@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 
-from elasticbot.core import ElasticBotConfig
-from elasticbot.core import ElasticBot
+from elasticbot.slack import ElasticBotConfig
+from elasticbot.slack import ElasticBot
+from elasticbot.elastic import ElasticClient
 
 if __name__ == "__main__":
-    config = ElasticBotConfig();
-    config.setToken("xoxb-39134108566-fm7WHjqnT282WZH9JbpLaTr9")
+    config = ElasticBotConfig()
+    config.setToken("")
     config.setCheckInterval(2)
+    esClient = ElasticClient()
+    esClient.search("GET /api/pingAlbo 200 3ms")
     bot = ElasticBot(config)
     bot.start()
