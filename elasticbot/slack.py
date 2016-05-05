@@ -2,7 +2,7 @@
 import time
 from slackclient import SlackClient
 
-class ElasticBot:
+class SlackBot:
     def __init__(self, config):
         self.config = config
         self.last_ts = "000000000000000000000000"
@@ -21,14 +21,22 @@ class ElasticBot:
 
     def parseMessage(self, message):
         if 'type' in message:
+            print("message:", message)
             messageType = message['type']
             if messageType == 'message':
                 messageText = message['text']
                 messageChannel = message['channel']
                 messageTs = message['ts']
                 if message['user'] != self.config.get_bot_id():
-                    if self.last_ts < messageTs:
-                        print("message '", messageText,"' from channel", messageChannel)
-                        self.config.get_query_engine().do(query = messageText)
-                        self.slackClient.rtm_send_message(messageChannel, messageText)
-                        self.last_ts = messageTs
+                    if messageChannel.startswith("D"):
+                        if self.last_ts < messageTs:
+                            print("message '", messageText,"' from channel", messageChannel)
+                            result = self.config.get_query_engine().do(query = messageText)
+                            self.slackClient.rtm_send_message(messageChannel, result)
+                            self.last_ts = messageTs
+                    if messageText.startswith("<@U16ER7H40>"):
+                        if self.last_ts < messageTs:
+                            print("message '", messageText,"' from channel", messageChannel)
+                            result = self.config.get_query_engine().do(query = messageText)
+                            self.slackClient.rtm_send_message(messageChannel, result)
+                            self.last_ts = messageTs

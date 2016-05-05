@@ -7,7 +7,7 @@ class Configuration:
         self.token = token
         self.check_interval = check_interval
         self.elastic = elastic
-        self.query_engine = ElasticClient(config = self)
+        self.query_engine = ElasticClient(url = elastic)
         self.bot_id = bot_id
         print("configuration created")
         

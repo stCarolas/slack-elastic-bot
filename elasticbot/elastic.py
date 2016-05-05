@@ -7,26 +7,18 @@ from datetime import date
 from datetime import timedelta
 
 class ElasticClient:
-    def __init__(self, config):
+    def __init__(self, url):
+        self.esClient = Elasticsearch(url)
         print("init elastic client")
 
     def do(self, query):
-        delta = timedelta(days = 7)
-        today = date.today() - delta
-            
-        print("current day:",today.day)
-        print("current month:",today.month)
-        print("current year:",today.year)
-        print("make magic on query ", query)
-
-    # def search(self, query):
-		# result = Search(using=self.esClient).query("match", message=query).query('range', ** {'@timestamp': {'to': 'now', 'from': datetime(2016, 4, 20 , 0, 0, 0)}}).execute()
-		# print("result: ", result, "\n")
-		# for hit in result:
-			# print("hit: ", hit, "\n")
-			# print("hit message: ", hit['message'], "\n")
-			# print("hit timestamp: ", hit['@timestamp'], "\n")
-
-
-			# s.filter('range', ** {'@timestamp': {'to': 'now'}})
-			# s.filter('range', publish_from={'lte': 'now/h'})
+        print("make search for query ", query)
+        startDate = date.today() - timedelta(days = 7)
+        request = Search(using = self.esClient).query("match", message = query)
+        request = request.query('range', ** {'@timestamp': {'to': 'now','from': datetime(startDate.year, startDate.month, startDate.day , 0, 0, 0)}})
+        result = request.execute()
+        print("result: ", result, "\n")
+        response = "Result: "
+        for hit in result:
+            response = response + "\n" + hit['@timestamp'] + " :: " +  hit['message']
+        return response
