@@ -3,12 +3,20 @@
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 from datetime import datetime
+from datetime import date
+from datetime import timedelta
 
 class ElasticClient:
     def __init__(self, config):
         print("init elastic client")
 
     def do(self, query):
+        delta = timedelta(days = 7)
+        today = date.today() - delta
+            
+        print("current day:",today.day)
+        print("current month:",today.month)
+        print("current year:",today.year)
         print("make magic on query ", query)
 
     # def search(self, query):
