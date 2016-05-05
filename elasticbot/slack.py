@@ -2,43 +2,33 @@
 import time
 from slackclient import SlackClient
 
-class ElasticBot(object):
+class ElasticBot:
     def __init__(self, config):
         self.config = config
-        print("config ElasticBot")
+        self.last_ts = "000000000000000000000000"
 
     def start(self):
-        print("elasticbot started using token", self.config.getToken())
-        slackClient = SlackClient(self.config.getToken())
-        if slackClient.rtm_connect():
+        self.slackClient = SlackClient(self.config.get_token())
+        if self.slackClient.rtm_connect():
+            print("connected")
             while True:
-                readedData = slackClient.rtm_read()
+                readedData = self.slackClient.rtm_read()
                 if readedData:
-                    message = readedData[0]
-                    if 'type' in message:
-                        print(readedData)
-                        messageType = message['type']
-                        if messageType == 'message':
-                            messageText = message['text']
-                            messageChannel = message['channel']
-                            print("message '", messageText,"' from channel", messageChannel)
-                            slackClient.rtm_send_message(messageChannel, messageText)
-                time.sleep(self.config.getCheckInterval())
+                    self.parseMessage(readedData[0])
+                time.sleep(self.config.get_check_interval())
         else:
-            print("Connection Failed")       
+            print("connection failed")
 
-class ElasticBotConfig:
-    def __init__(self):
-        print("loading config")
-        
-    def setToken(self, token):
-         self.token = token
-         
-    def getToken(self):
-         return self.token
-         
-    def setCheckInterval(self, interval):
-        self.interval = interval
-         
-    def getCheckInterval(self):
-        return self.interval
+    def parseMessage(self, message):
+        if 'type' in message:
+            messageType = message['type']
+            if messageType == 'message':
+                messageText = message['text']
+                messageChannel = message['channel']
+                messageTs = message['ts']
+                if message['user'] != self.config.get_bot_id():
+                    if self.last_ts < messageTs:
+                        print("message '", messageText,"' from channel", messageChannel)
+                        self.config.get_query_engine().do(query = messageText)
+                        self.slackClient.rtm_send_message(messageChannel, messageText)
+                        self.last_ts = messageTs
